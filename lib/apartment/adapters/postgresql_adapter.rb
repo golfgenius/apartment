@@ -124,6 +124,7 @@ module Apartment
       def clone_pg_schema
         pg_schema_sql = patch_search_path(pg_dump_schema)
         pg_schema_sql = pg_schema_sql.gsub("#{default_tenant}.", "#{current}.")
+        pg_schema_sql = pg_schema_sql.gsub("#{current}.hstore", "public.hstore")
         Apartment.connection.execute(pg_schema_sql)
       end
 
