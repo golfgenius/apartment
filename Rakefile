@@ -53,7 +53,7 @@ namespace :postgres do
   task :build_db do
     %x{ createdb -E UTF8 #{pg_config['database']} -U#{pg_config['username']} } rescue "test db already exists"
     ActiveRecord::Base.establish_connection pg_config
-    ActiveRecord::Migrator.migrate('spec/dummy/db/migrate')
+    migrate
   end
 
   desc "drop the PostgreSQL test database"
@@ -72,7 +72,7 @@ namespace :mysql do
   task :build_db do
     %x{ mysqladmin -u #{my_config['username']} --password=#{my_config['password']} create #{my_config['database']} } rescue "test db already exists"
     ActiveRecord::Base.establish_connection my_config
-    ActiveRecord::Migrator.migrate('spec/dummy/db/migrate')
+    migrate
   end
 
   desc "drop the MySQL test database"
@@ -94,4 +94,16 @@ end
 
 def my_config
   config['mysql']
+end
+
+def activerecord_below_5_2?
+  ActiveRecord.version.release() < Gem::Version.new('5.2.0')
+end
+
+def migrate
+  if activerecord_below_5_2?
+    ActiveRecord::Migrator.migrate('spec/dummy/db/migrate')
+  else
+    ActiveRecord::MigrationContext.new('spec/dummy/db/migrate').migrate
+  end
 end
