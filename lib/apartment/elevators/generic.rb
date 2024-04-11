@@ -21,7 +21,7 @@ module Apartment
         if database
           Apartment::Tenant.switch(database) { @app.call(env) }
         else
-          @app.call(env)
+          [404, {'Content-Type' => 'text/html'}, ['Hello from middleware']]
         end
       end
 
