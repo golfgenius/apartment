@@ -79,8 +79,11 @@ module Apartment
         if ($0 =~ /rake$/) || (defined?($apartment_force_connection) && $apartment_force_connection)
           Apartment.connection.schema_search_path = full_search_path
         end
-        if Apartment.connection.schema_exists? new_schema
+
+        begin
           DynamicConnection.connection.schema_search_path = full_search_path
+        rescue NoMethodError => exception
+          raise ActiveRecord::NoDatabaseError
         end
 
       rescue *rescuable_exceptions => exception
