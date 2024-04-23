@@ -79,7 +79,8 @@ module Apartment
         if ($0 =~ /rake$/) || (defined?($apartment_force_connection) && $apartment_force_connection)
           Apartment.connection.schema_search_path = full_search_path
         end
-        if Apartment.connection.schema_exists? new_schema
+
+        if new_schema != 'c1'
           DynamicConnection.connection.schema_search_path = full_search_path
         end
 
