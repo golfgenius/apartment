@@ -240,7 +240,7 @@ module Apartment
       #   Load a file or abort if it doesn't exists
       #
       def load_or_abort(file)
-        if File.exists?(file)
+        if File.exist?(file)
           load(file)
         else
           abort %{#{file} doesn't exist yet}

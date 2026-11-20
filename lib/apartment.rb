@@ -17,7 +17,12 @@ module Apartment
     attr_accessor(*ACCESSOR_METHODS)
     attr_writer(*WRITER_METHODS)
 
-    def_delegators :connection_class, :connection, :connection_config, :establish_connection
+    def_delegators :connection_class, :connection, :establish_connection
+
+    # ActiveRecord::Base.connection_config is gone in Rails 7.0; connection_db_config exists from 6.1 on.
+    def connection_config
+      connection_class.connection_db_config.configuration_hash
+    end
 
     # configure apartment with available options
     def configure
